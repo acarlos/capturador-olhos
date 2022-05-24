@@ -1,1 +1,6 @@
 **/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/*
+test.record
+train.record
+train_labels.csv
+test_labels.csv
+label_map.pbtxt
