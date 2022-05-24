@@ -1,0 +1,2 @@
+com_capacete
+sem_capacete
