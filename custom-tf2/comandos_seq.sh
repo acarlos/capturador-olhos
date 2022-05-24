@@ -100,7 +100,7 @@ python tflite_metadata.py
 cd /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/tflite/
 rm -Rf saved_model/
 cd /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/tflite/tflite_with_metadata/
-mv detect.tflite /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/detect.tflite
+mv detect.tflite /home/acarlos/usr/local/workspace/helmet_detection/app/src/main/assets/detect.tflite
 cd ..
 rm detect.tflite
 cd ..
@@ -117,4 +117,5 @@ cd ..
 cd images/
 rm *.jpeg
 cd ..
+cp labelmap.txt /home/acarlos/usr/local/workspace/helmet_detection/app/src/main/assets/labelmap.txt
 
