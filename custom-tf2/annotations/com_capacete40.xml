@@ -1,13 +1,13 @@
 <annotation>
 	<folder>com_capacete</folder>
 	<filename>com_capacete40.jpeg</filename>
-	<path>/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/images/com_capacete40.jpeg</path>
+	<path>/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/images/com_capacete/com_capacete40.jpeg</path>
 	<source>
 		<database>Unknown</database>
 	</source>
 	<size>
-		<width>183</width>
-		<height>275</height>
+		<width>299</width>
+		<height>168</height>
 		<depth>3</depth>
 	</size>
 	<segmented>0</segmented>
@@ -17,10 +17,10 @@
 		<truncated>0</truncated>
 		<difficult>0</difficult>
 		<bndbox>
-			<xmin>83</xmin>
-			<ymin>20</ymin>
-			<xmax>152</xmax>
-			<ymax>99</ymax>
+			<xmin>106</xmin>
+			<ymin>32</ymin>
+			<xmax>185</xmax>
+			<ymax>135</ymax>
 		</bndbox>
 	</object>
 </annotation>

@@ -1,13 +1,13 @@
 <annotation>
 	<folder>sem_capacete</folder>
 	<filename>sem_capacete14.jpeg</filename>
-	<path>/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/images/sem_capacete14.jpeg</path>
+	<path>/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/images/sem_capacete/sem_capacete14.jpeg</path>
 	<source>
 		<database>Unknown</database>
 	</source>
 	<size>
-		<width>184</width>
-		<height>274</height>
+		<width>474</width>
+		<height>604</height>
 		<depth>3</depth>
 	</size>
 	<segmented>0</segmented>
@@ -17,10 +17,10 @@
 		<truncated>0</truncated>
 		<difficult>0</difficult>
 		<bndbox>
-			<xmin>40</xmin>
-			<ymin>44</ymin>
-			<xmax>171</xmax>
-			<ymax>155</ymax>
+			<xmin>83</xmin>
+			<ymin>15</ymin>
+			<xmax>393</xmax>
+			<ymax>407</ymax>
 		</bndbox>
 	</object>
 </annotation>

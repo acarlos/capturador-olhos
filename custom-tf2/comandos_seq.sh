@@ -67,7 +67,7 @@ cd /home/acarlos/usr/local/workspace/models/research/object_detection
 echo 'Set variables'
 PIPELINE_CONFIG_PATH=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config
 MODEL_DIR=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training
-NUM_TRAIN_STEPS=5000
+NUM_TRAIN_STEPS=50000
 SAMPLE_1_OF_N_EVAL_EXAMPLES=1
 
 #Training using model_main_tf2.py
@@ -118,4 +118,10 @@ cd images/
 rm *.jpeg
 cd ..
 cp labelmap.txt /home/acarlos/usr/local/workspace/helmet_detection/app/src/main/assets/labelmap.txt
+cd ..
+cd training
+rm !\(.gitignore\) -Rf *
+killall tensorboard
+
+
 
