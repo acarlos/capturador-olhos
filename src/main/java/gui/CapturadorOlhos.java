@@ -12,12 +12,18 @@ package gui;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfRect;
@@ -25,11 +31,10 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.videoio.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.videoio.VideoCapture;
 
 /**
  *
@@ -135,7 +140,7 @@ public class CapturadorOlhos extends javax.swing.JFrame {
 								//Imgproc.rectangle(frame, new Point(face.x, face.y), new Point(face.x + face.width, face.y + face.height), COLOR_CONTORNO_OLHO);
 								// Procurar por olhos do rosto detectado
 								faceROI = frame.submat(face);
-								olhosDetector.detectMultiScale(faceROI, eyes, 1.5, 1, 0, MIN_SIZE_CONTORNO_OLHOS, MAX_SIZE_CONTORNO_OLHOS);
+								olhosDetector.detectMultiScale(faceROI, eyes, 1.1, 1, 0, MIN_SIZE_CONTORNO_OLHOS, MAX_SIZE_CONTORNO_OLHOS);
 								Rect[] eyesArray = eyes.toArray();
 								for (int i = 0; i < eyesArray.length; i++) {
 									for (int j = i + 1; j < eyesArray.length; j++) {
@@ -281,6 +286,7 @@ public class CapturadorOlhos extends javax.swing.JFrame {
 					palavraFormada += letraEscolhida;
 					bateuLetra = false;
 					ultimaPosicao = 0;//Voltar pro A
+					playSoundWav("/home/acarlos/double-beep.wav");
 				}
 			}
 		}
@@ -305,6 +311,23 @@ public class CapturadorOlhos extends javax.swing.JFrame {
 				ultimaPosicao++ ;
 				posicaoX = posicaoX - 300;
 				bateuLetra = true;
+				playSoundWav("/home/acarlos/tone-beep.wav");
+
+			}
+		}
+
+		private void playSoundWav(String filePath) {
+			File lol = new File(filePath);
+			try {
+				Clip clip = AudioSystem.getClip();
+				clip.open(AudioSystem.getAudioInputStream(lol));
+				clip.start();
+			} catch (LineUnavailableException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (UnsupportedAudioFileException e) {
+				e.printStackTrace();
 			}
 		}
 
