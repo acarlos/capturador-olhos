@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # clone the tensorflow models on the colab cloud vm
 #git clone --q https://github.com/tensorflow/models.git
 
@@ -9,12 +11,12 @@
 
 # Install TensorFlow Object Detection API.
 #cp object_detection/packages/tf2/setup.py .
-#python -m pip install .
+#python3 -m pip install .
 
 # testing the model builder
 
 #pip install numpy --upgrade
-#python object_detection/builders/model_builder_tf2_test.py
+#python3 object_detection/builders/model_builder_tf2_test.py
 
 # Create and unpack the images and labels PascalVOC
 #unzip /mydrive/customTF2/images.zip -d .
@@ -24,6 +26,7 @@
 echo '#Copy images and annotations'
 cd /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/images/
 cp ./com_capacete/*.jpeg ../data/images/
+cp ./com_capacete_bicicleta/*.jpeg ../data/images/
 cp ./sem_capacete/*.jpeg ../data/images/
 cd ..
 cd annotations
@@ -34,8 +37,8 @@ echo '# Go to directory'
 cd /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/
 
 # Create test_labels & train_labels - 20% of 211
-echo '# Create test_labels & train_labels - 20% of 211'
-ls annotations/* | sort -R | head -44 | xargs -I{} mv {} test_labels/
+echo '# Create test_labels & train_labels - 20% of 190'
+ls annotations/* | sort -R | head -38 | xargs -I{} mv {} test_labels/
 
 # Moves the rest of the labels ( 1096 labels ) to the training dir: `train_labels`
 echo '# Moves the rest of the labels ( 1096 labels ) to the training dir: train_labels'
@@ -43,16 +46,16 @@ ls annotations/* | xargs -I{} mv {} train_labels/
 
 #Create the CSV  and the “label_map.pbtxt” file
 echo '#Create the CSV  and the “label_map.pbtxt” file'
-python xml_to_csv.py
+python3 xml_to_csv.py
 
 #Create train.record & test.record 
 #Usage:
-#!python generate_tfrecord.py output.csv output_pb.txt /path/to/images output.tfrecords
+#!python3 generate_tfrecord.py output.csv output_pb.txt /path/to/images output.tfrecords
 #For train.record
 echo 'Create train.record & test.record'
-python generate_tfrecord.py train_labels.csv  label_map.pbtxt images/ train.record
+python3 generate_tfrecord.py train_labels.csv  label_map.pbtxt images/ train.record
 #For test.record
-python generate_tfrecord.py test_labels.csv  label_map.pbtxt images/ test.record
+python3 generate_tfrecord.py test_labels.csv  label_map.pbtxt images/ test.record
 
 #Currently, TFLite supports only SSD models (excluding EfficientDet)
 #ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8
@@ -65,23 +68,27 @@ tensorboard --logdir '/home/acarlos/usr/local/workspace/helmet_detection/custom-
 cd /home/acarlos/usr/local/workspace/models/research/object_detection
 #Set variables
 echo 'Set variables'
-PIPELINE_CONFIG_PATH=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config
+PIPELINE_CONFIG_PATH=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/pipeline.config
 MODEL_DIR=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training
-NUM_TRAIN_STEPS=50000
+NUM_TRAIN_STEPS=1000
 SAMPLE_1_OF_N_EVAL_EXAMPLES=1
 
 #Training using model_main_tf2.py
 echo '#Training using model_main_tf2.py'
-python model_main_tf2.py --pipeline_config_path=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config --model_dir=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training --alsologtostderr
+python3 model_main_tf2.py --pipeline_config_path=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/pipeline.config --model_dir=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training --alsologtostderr
+
+#Evaluate model
+#echo '#Evaluating using model_main_tf2.py'
+#python3 model_main_tf2.py --pipeline_config_path=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/pipeline.config --model_dir=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training/ --checkpoint_dir=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training/ --alsologtostderr & 
 
 #Test your trained model
 echo '#Test your trained model'
-python exporter_main_v2.py --trained_checkpoint_dir=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training --pipeline_config_path=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config --output_directory /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/inference_graph
+python3 exporter_main_v2.py --trained_checkpoint_dir=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training --pipeline_config_path=/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/pipeline.config --output_directory /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/inference_graph
 
 #CONVERTING THE TRAINED SSD MODEL TO TFLITE MODEL
 #Export SSD TFlite graph
 echo 'Export SSD TFlite graph'
-python export_tflite_graph_tf2.py --pipeline_config_path /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8.config --trained_checkpoint_dir /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training --output_directory /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/tflite
+python3 export_tflite_graph_tf2.py --pipeline_config_path /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8/pipeline.config --trained_checkpoint_dir /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/training --output_directory /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/tflite
 
 #Convert the TensorFlow saved model to the TFlite model
 echo '#Convert the TensorFlow saved model to the TFlite model'
@@ -94,34 +101,10 @@ tflite_convert --saved_model_dir=/home/acarlos/usr/local/workspace/helmet_detect
 #Attach metadata to the TFLite model
 echo '#Attach metadata to the TFLite model'
 cd /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/
-python tflite_metadata.py
+python3 tflite_metadata.py
 
 #Clean it up
-cd /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/tflite/
-rm -Rf saved_model/
-cd /home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/data/tflite/tflite_with_metadata/
-mv detect.tflite /home/acarlos/usr/local/workspace/helmet_detection/app/src/main/assets/detect.tflite
-cd ..
-rm detect.tflite
-cd ..
-rm test.record train.record train_labels.csv test_labels.csv label_map.pbtxt
-cd train_labels/
-rm *.xml
-cd ..
-cd test_labels/
-rm *.xml
-cd ..
-cd inference_graph/
-rm -Rf *
-cd ..
-cd images/
-rm *.jpeg
-cd ..
-cp labelmap.txt /home/acarlos/usr/local/workspace/helmet_detection/app/src/main/assets/labelmap.txt
-cd ..
-cd training
-rm !\(.gitignore\) -Rf *
-killall tensorboard
+/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/./clean.sh
 
 
 

@@ -1,0 +1,26 @@
+<annotation>
+	<folder>com_capacete_bicicleta</folder>
+	<filename>com_capacete_bicicleta7.jpeg</filename>
+	<path>/home/acarlos/usr/local/workspace/helmet_detection/custom-tf2/images/com_capacete_bicicleta/com_capacete_bicicleta7.jpeg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>474</width>
+		<height>712</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>com_capacete_bicicleta</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>128</xmin>
+			<ymin>113</ymin>
+			<xmax>272</xmax>
+			<ymax>295</ymax>
+		</bndbox>
+	</object>
+</annotation>
