@@ -24,4 +24,4 @@ cp labelmap.txt /home/acarlos/usr/local/workspace/helmet_detection/app/src/main/
 cd ..
 cd training
 rm !\(.gitignore\) -Rf *
-#killall tensorboard
+killall tensorboard
