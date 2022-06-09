@@ -43,10 +43,15 @@ public class CapturadorOlhos extends javax.swing.JFrame {
 	private static final long serialVersionUID = 1353469977315914234L;
 
 	// dimensoes da janela
-	private static final int TARGET_WIDTH = 800;
+	private static final int WINDOW_WIDTH = 800;
 
-	private static final int TARGET_HEIGHT = 600;
+	private static final int WINDOW_HEIGHT = 600;
 	///
+	
+	// dimensoes da janela target
+	private static final int TARGET_WIDTH = 1024;
+
+	private static final int TARGET_HEIGHT = 768;
 
 	private DaemonThread myThread = null;
 
@@ -127,10 +132,10 @@ public class CapturadorOlhos extends javax.swing.JFrame {
 							MatOfRect eyes = new MatOfRect();
 							for (Rect face : faces) {
 							
-								Imgproc.rectangle(frame, new Point(face.x, face.y), new Point(face.x + face.width, face.y + face.height), COLOR_CONTORNO_OLHO);
+								//Imgproc.rectangle(frame, new Point(face.x, face.y), new Point(face.x + face.width, face.y + face.height), COLOR_CONTORNO_OLHO);
 								// Procurar por olhos do rosto detectado
 								faceROI = frame.submat(face);
-								olhosDetector.detectMultiScale(faceROI, eyes, 1.1, 1, 0, MIN_SIZE_CONTORNO_OLHOS, MAX_SIZE_CONTORNO_OLHOS);
+								olhosDetector.detectMultiScale(faceROI, eyes, 1.5, 1, 0, MIN_SIZE_CONTORNO_OLHOS, MAX_SIZE_CONTORNO_OLHOS);
 								Rect[] eyesArray = eyes.toArray();
 								for (int i = 0; i < eyesArray.length; i++) {
 									for (int j = i + 1; j < eyesArray.length; j++) {
@@ -208,32 +213,9 @@ public class CapturadorOlhos extends javax.swing.JFrame {
 													if (ultimaPosicao > alfabeto.length){
 														ultimaPosicao = 0;
 													}
-													if (posicaoX >= CapturadorOlhos.TARGET_WIDTH){
-														if (ultimaPosicao == alfabeto.length) {
-															ultimaPosicao = 0;
-														}
-														letraEscolhida = alfabeto[ultimaPosicao];
-														ultimaPosicao++ ;
-														posicaoX = posicaoX - 200;
-														bateuLetra = true;
-													} 
-													if (posicaoX <= 0){
-														if (palavraFormada.length() == 1) {
-															palavraFormada = "";
-														} else if (palavraFormada.length() > 1) {
-															palavraFormada = palavraFormada.substring(0, palavraFormada.length()-1);
-														}
-														posicaoX = posicaoX + 200;
-													}
-													if (
-															(averageY < -2) && 
-															((posicaoX <= ((CapturadorOlhos.TARGET_WIDTH/2) + 100)) && (posicaoX  >= ((CapturadorOlhos.TARGET_WIDTH/2) - 100)))
-													) {
-														if (bateuLetra) {
-															palavraFormada += letraEscolhida;
-															bateuLetra = false;
-														}
-													}
+													setLetraSelecionada(); 
+													setPalavraFormada();
+													adicionarLetraEmPalavraFormada(averageY);
 													this.targetFrame.setLetra(letraEscolhida);
 													this.targetFrame.setPalavraFormada(palavraFormada);
 													this.contadorOlhosMovimento = 0;
@@ -287,6 +269,42 @@ public class CapturadorOlhos extends javax.swing.JFrame {
 					}
 
 				}
+			}
+		}
+
+		private void adicionarLetraEmPalavraFormada(double averageY) {
+			if (
+					(averageY < -2) && 
+					((posicaoX <= ((CapturadorOlhos.TARGET_WIDTH/2) + 100)) && (posicaoX  >= ((CapturadorOlhos.TARGET_WIDTH/2) - 100)))
+			) {
+				if (bateuLetra) {
+					palavraFormada += letraEscolhida;
+					bateuLetra = false;
+					ultimaPosicao = 0;//Voltar pro A
+				}
+			}
+		}
+
+		private void setPalavraFormada() {
+			if (posicaoX <= 0){
+				if (palavraFormada.length() == 1) {
+					palavraFormada = "";
+				} else if (palavraFormada.length() > 1) {
+					palavraFormada = palavraFormada.substring(0, palavraFormada.length()-1);
+				}
+				posicaoX = posicaoX + 300;
+			}
+		}
+
+		private void setLetraSelecionada() {
+			if (posicaoX >= CapturadorOlhos.TARGET_WIDTH){
+				if (ultimaPosicao == alfabeto.length) {
+					ultimaPosicao = 0;
+				}
+				letraEscolhida = alfabeto[ultimaPosicao];
+				ultimaPosicao++ ;
+				posicaoX = posicaoX - 300;
+				bateuLetra = true;
 			}
 		}
 
